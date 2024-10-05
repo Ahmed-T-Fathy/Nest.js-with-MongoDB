@@ -21,8 +21,7 @@ export class UserService {
   }
   async getAllUsers(data: GetAllUsersDTO, req: Request): Promise<APIresponse> {
     try {
-      console.log("here");
-      
+
       let filterBy: any = {};
       if (data.email) {
         filterBy.email = { $regex: data.email, options: 'i' };
@@ -41,12 +40,20 @@ export class UserService {
       const skip = (data.page - 1) * data.limit;
       let pageCount: number = Math.round(totalCount / data.limit);
 
-      console.log(data.orderBy);
-      const orderBy = data.orderBy || {};
+
+      const orderBy: { [key: string]: 'asc' | 'desc' } = {};
+
+      if (data.orderBy) {
+        data.orderBy.split(',').forEach((field) => {
+          const direction = field.startsWith('-') ? 'desc' : 'asc';
+          const fieldName = field.startsWith('-') ? field.slice(1) : field;
+          orderBy[fieldName] = direction;
+        });
+      }
 
       const users = await this.userModel
         .find({ ...filterBy })
-        .sort(orderBy as any)
+        .sort(orderBy)
         .skip(skip)
         .limit(data.limit);
       return new APIresponse(

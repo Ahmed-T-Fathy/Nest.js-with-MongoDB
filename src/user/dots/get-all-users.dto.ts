@@ -1,5 +1,12 @@
-import { Transform, Type } from 'class-transformer';
-import { IsEnum, IsNumber, IsObject, IsOptional, IsString, Min } from 'class-validator';
+import { Expose, Transform, Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { orderByTransformer } from 'src/transformers/orderby.transformer';
 import { Role } from '../role.enum';
 
@@ -20,9 +27,10 @@ export class GetAllUsersDTO {
   //   skip?: number;
 
   @IsOptional()
-  @IsObject()  // Use IsObject here instead of string
-  orderBy?: { [key: string]: number };  // Expecting an object directly
-
+  // @Transform(orderByTransformer)
+  // @Expose()
+  orderBy?: string;
+  
   @IsOptional()
   @IsString()
   name?: string;
