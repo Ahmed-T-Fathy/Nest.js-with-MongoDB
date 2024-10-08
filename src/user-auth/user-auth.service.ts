@@ -23,7 +23,8 @@ export class UserAuthService {
 
       if (!await user.validatePassword(data.password))
         throw new ForbiddenException('incorrect password!');
-      return { accessToken: 'token' };
+      // const token:string=await user.generateToken();
+      return { accessToken: await user.generateToken()};
     } catch (err) {
       throw new InternalServerErrorException(err);
     }

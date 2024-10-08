@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import { User } from 'src/user/user.schema';
+import * as jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt';
 const SALT_ROUNDS = 10;
 interface UserUpdate {
@@ -26,4 +27,14 @@ export const authPlugin = (schema: Schema) => {
     }
     next();
   });
+
+  schema.methods.validatePassword = async function (password: string) {
+    return await bcrypt.compare(password, this.password);
+  };
+
+  schema.methods.generateToken=async function () {
+    const payload={id:this._id}
+    const secret = process.env.JWT_SECRET;
+    return await jwt.sign(payload, secret, { expiresIn: '1h' });
+  }
 };
