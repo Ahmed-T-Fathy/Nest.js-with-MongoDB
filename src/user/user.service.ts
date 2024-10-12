@@ -21,7 +21,6 @@ export class UserService {
   }
   async getAllUsers(data: GetAllUsersDTO, req: Request): Promise<APIresponse> {
     try {
-
       let filterBy: any = {};
       if (data.email) {
         filterBy.email = { $regex: data.email, options: 'i' };
@@ -39,7 +38,6 @@ export class UserService {
       let totalCount: number = await this.userModel.countDocuments(filterBy);
       const skip = (data.page - 1) * data.limit;
       let pageCount: number = Math.round(totalCount / data.limit);
-
 
       const orderBy: { [key: string]: 'asc' | 'desc' } = {};
 
@@ -64,6 +62,14 @@ export class UserService {
         totalCount,
         req,
       );
+    } catch (err) {
+      throw new InternalServerErrorException(err);
+    }
+  }
+
+  async getUserById(id: string): Promise<User> {
+    try {
+      return await this.userModel.findById(id);
     } catch (err) {
       throw new InternalServerErrorException(err);
     }

@@ -1,9 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from './role.enum';
-import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-@Schema()
+@Schema({ timestamps: true , versionKey: false})
 export class User extends Document {
   @Prop({ required: true })
   name: string;
@@ -21,6 +19,7 @@ export class User extends Document {
   password: string;
 
   validatePassword: Function;
+
   generateToken: Function;
 }
 

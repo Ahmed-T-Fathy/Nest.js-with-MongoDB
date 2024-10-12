@@ -8,6 +8,7 @@ import { LoggingMiddleWare } from './middlewares/logging.middleware';
 import { UserAuthModule } from './user-auth/user-auth.module';
 import { UserAuthController } from './user-auth/user-auth.controller';
 import { UserAuthService } from './user-auth/user-auth.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -27,6 +28,16 @@ import { UserAuthService } from './user-auth/user-auth.service';
     }),
     UserModule,
     UserAuthModule,
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config:ConfigService) => {
+        return {
+          global: true,
+          secret: config.get<string>('JWT_SECRET'),
+          signOptions:{expiresIn:config.get<string>('JWT_EXPIRESIN')}
+        };
+      }
+    })
   ],
   controllers: [AppController, UserAuthController],
   providers: [AppService, UserAuthService],

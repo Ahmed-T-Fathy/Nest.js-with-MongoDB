@@ -35,6 +35,7 @@ export const authPlugin = (schema: Schema) => {
   schema.methods.generateToken=async function () {
     const payload={id:this._id}
     const secret = process.env.JWT_SECRET;
-    return await jwt.sign(payload, secret, { expiresIn: '1h' });
+    const expiresIn = process.env.JWT_EXPIRESIN;
+    return await jwt.sign(payload, secret, { expiresIn});
   }
 };
